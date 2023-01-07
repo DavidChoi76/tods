@@ -5,6 +5,8 @@
 [![Actions Status](https://github.com/datamllab/tods/workflows/Build/badge.svg)](https://github.com/datamllab/tods/actions)
 [![codecov](https://codecov.io/gh/datamllab/tods/branch/master/graph/badge.svg?token=M90ZCVTRBF)](https://codecov.io/gh/datamllab/tods)
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/DavidChoi76/tods.git/HEAD)
+
 [中文文档](README.zh-CN.md)
 
 TODS is a full-stack automated machine learning system for outlier detection on multivariate time-series data. TODS provides exhaustive modules for building machine learning-based outlier detection systems, including: data processing, time series processing, feature analysis (extraction), detection algorithms, and reinforcement module. The functionalities provided via these modules include data preprocessing for general purposes, time series data smoothing/transformation, extracting features from time/frequency domains, various detection algorithms, and involving human expertise to calibrate the system. Three common outlier detection scenarios on time-series data can be performed: point-wise detection (time points as outliers), pattern-wise detection (subsequences as outliers), and system-wise detection (sets of time series as outliers), and a wide-range of corresponding algorithms are provided in TODS. This package is developed by [DATA Lab @ Rice University](https://cs.rice.edu/~xh37/index.html).
