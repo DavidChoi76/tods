@@ -24,7 +24,7 @@ __all__ = ('DiscreteCosineTransformPrimitive',)
 
 Inputs = container.DataFrame
 Outputs = container.DataFrame
-
+from tods.utils import construct_primitive_metadata
 
 class Hyperparams(hyperparams.Hyperparams):
 
@@ -169,9 +169,8 @@ class DiscreteCosineTransformPrimitive(TODSTransformerPrimitiveBase[Inputs, Outp
     scipy documentation: https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html#scipy.fft.dct
 
 
-    Parameters
-    ----------
-
+Parameters
+----------
     type_: int
         Type of the DCT. Default is 2
 
@@ -180,16 +179,17 @@ class DiscreteCosineTransformPrimitive(TODSTransformerPrimitiveBase[Inputs, Outp
 
     axis: int
         Axis over which to compute the DCT. If not given, the last axis is used.
-    
+
     norm: str
         Normalization mode. Default is None, meaning no normalization on the forward transforms and scaling by 1/n on the ifft. For norm=""ortho"", both directions are scaled by 1/sqrt(n).
-    
+
     overwrite_x: boolean
         If True, the contents of x can be destroyed; the default is False. See the notes below for more details.
 
     workers: int
         Maximum number of workers to use for parallel computation. If negative, the value wraps around from os.cpu_count(). Defualt is None.
     
+.. dropdown:: Control Parameter
 
     use_columns: Set
         A set of column indices to force primitive to operate on. If any specified column cannot be parsed, it is skipped.
@@ -212,25 +212,11 @@ class DiscreteCosineTransformPrimitive(TODSTransformerPrimitiveBase[Inputs, Outp
     return_semantic_type: Enumeration[str](
         Decides what semantic type to attach to generated attributes'
 
-    """
+    """  
 
-    metadata = metadata_base.PrimitiveMetadata({
-            "__author__ " : "DATA Lab @ Texas A&M University",
-            'name': "Discrete Cosine Transform",
-            'python_path': 'd3m.primitives.tods.feature_analysis.discrete_cosine_transform',
-            'source': {
-                'name': 'DATA Lab at Texas A&M University',
-                'contact': 'mailto:khlai037@tamu.edu',
-            },
-            'hyperparameters_to_tune':['n','norm','axis','type_'],
-            'version': '0.0.1',
-            'algorithm_types': [
-                metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE,
-            ],
-            'primitive_family': metadata_base.PrimitiveFamily.FEATURE_CONSTRUCTION,
-	    'id': str(uuid.uuid3(uuid.NAMESPACE_DNS, 'DiscreteCosineTransformPrimitive')),
-        },
-    )
+    metadata = construct_primitive_metadata(module='feature_analysis', name='discrete_cosine_transform', id='DiscreteCosineTransformPrimitive', primitive_family='feature_construct', hyperparams=['n','norm','axis','type_'], description='Discrete Cosine Transform')
+    
+    
 
     def __init__(self, *, hyperparams: Hyperparams) -> None:
         super().__init__(hyperparams=hyperparams)
@@ -469,7 +455,7 @@ class DiscreteCosineTransformPrimitive(TODSTransformerPrimitiveBase[Inputs, Outp
         return target_columns_metadata
 
 
-DiscreteCosineTransformPrimitive.__doc__ = DiscreteCosineTransformPrimitive.__doc__
+# DiscreteCosineTransformPrimitive.__doc__ = DiscreteCosineTransformPrimitive.__doc__
 
 
 

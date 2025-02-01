@@ -32,7 +32,7 @@ __all__ = ('BKFilterPrimitive',)
 
 Inputs = container.DataFrame
 Outputs = container.DataFrame
-
+from tods.utils import construct_primitive_metadata
 
 class Hyperparams(hyperparams.Hyperparams):
     # Tuning
@@ -123,16 +123,17 @@ class BKFilterPrimitive(TODSTransformerPrimitiveBase[Inputs, Outputs, Hyperparam
     """
     Filter a time series using the Baxter-King bandpass filter.
 
-    Parameters
-    ----------
+Parameters
+----------
     low: int
         Minimum period for oscillations, ie., Baxter and King suggest that the Burns-Mitchell U.S. business cycle has 6 for quarterly data and 1.5 for annual data.
     
     high: int
         Maximum period for oscillations BK suggest that the U.S. business cycle has 32 for quarterly data and 8 for annual data.
-
     K: int
         Lead-lag length of the filter. Baxter and King propose a truncation length of 12 for quarterly data and 3 for annual data.  
+    
+.. dropdown:: Control Parameter
 
     use_columns: Set
         A set of column indices to force primitive to operate on. If any specified column cannot be parsed, it is skipped.
@@ -156,22 +157,9 @@ class BKFilterPrimitive(TODSTransformerPrimitiveBase[Inputs, Outputs, Hyperparam
         Decides what semantic type to attach to generated attributes'
     """
 
-    metadata = metadata_base.PrimitiveMetadata({ 
-        "__author__": "DATA Lab at Texas A&M University",
-        "name": "Baxter-King Filter Primitive",
-        "python_path": "d3m.primitives.tods.feature_analysis.bk_filter",
-        "source": {
-            'name': 'DATA Lab at Texas A&M University', 
-            'contact': 'mailto:khlai037@tamu.edu', 
-        },
-        "hyperparams_to_tune": ['low', 'high', 'K'],
-        "version": "0.0.1",
-        "algorithm_types": [
-            metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE,
-        ],
-        "primitive_family": metadata_base.PrimitiveFamily.FEATURE_CONSTRUCTION,
-	'id': str(uuid.uuid3(uuid.NAMESPACE_DNS, 'BKFilterPrimitive')),
-    })
+    metadata = construct_primitive_metadata(module='feature_analysis', name='bk_filter', id='BKFilterPrimitive', primitive_family='feature_construct', hyperparams=['low', 'high', 'K'], description='Baxter-King Filter Primitive')
+    
+    
 
 
     def _produce(self, *, inputs: Inputs, timeout: float = None, iterations: int = None) -> CallResult[Outputs]:
@@ -223,6 +211,8 @@ class BKFilterPrimitive(TODSTransformerPrimitiveBase[Inputs, Outputs, Hyperparam
                                                add_index_columns=self.hyperparams['add_index_columns'],
                                                inputs=inputs, column_indices=self._training_indices,
                                                columns_list=output_columns)
+        # outputs.to_csv('BK.csv')
+        outputs.fillna(0,inplace=True)
         return CallResult(outputs)
         
     

@@ -17,6 +17,7 @@ __all__ = ('ColumnParserPrimitive',)
 Inputs = container.DataFrame
 Outputs = container.DataFrame
 
+from tods.utils import construct_primitive_metadata
 
 class Hyperparams(hyperparams.Hyperparams):
     parse_semantic_types = hyperparams.Set(
@@ -89,23 +90,29 @@ class ColumnParserPrimitive(transformer.TransformerPrimitiveBase[Inputs, Outputs
     hash encoding.
 
     What is returned is controlled by ``return_result`` and ``add_index_columns``.
+
+    Parameters
+    ----------
+    parse_semantic_types :Set
+        A set of semantic types to parse. One can provide a subset of supported semantic types to limit what the primitive parses.       
+    use_columns :Set
+        A set of column indices to force primitive to operate on. If any specified column cannot be parsed, it is skipped.
+    exclude_columns :Set
+        A set of column indices to not operate on. Applicable only if \"use_columns\" is not provided.
+    return_result :Enumeration
+        Should parsed columns be appended, should they replace original columns, or should only parsed columns be returned?
+    add_index_columns :Bool
+        Also include primary index columns if input data has them. Applicable only if \"return_result\" is set to \"new\".
+    parse_categorical_target_columns = hyperparams.UniformBool
+        Should it parse also categorical target columns?
+    replace_index_columns :Bool
+        Replace primary index columns even if otherwise appending columns. Applicable only if \"return_result\" is set to \"append\".   
+    fuzzy_time_parsing :Bool
+        Use fuzzy time parsing.
     """
 
-    metadata = metadata_base.PrimitiveMetadata({
-	    '__author__': "DATA Lab @Texas A&M University",
-            'version': '0.6.0',
-            'name': "Parses strings into their types",
-            'python_path': 'd3m.primitives.tods.data_processing.column_parser',
-            'source': {
-                'name': "DATA Lab @ Texas A&M University",
-                'contact': 'mailto:khlai037@tamu.edu',
-            },
-            'algorithm_types': [
-                metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE
-            ], 
-            'primitive_family': metadata_base.PrimitiveFamily.DATA_TRANSFORMATION,
-	    'id': str(uuid.uuid3(uuid.NAMESPACE_DNS, 'ColumnParserPrimitive')),
-            })
+   
+    metadata = construct_primitive_metadata(module='data_processing', name='column_parser', id='ColumnParserPrimitive', primitive_family='data_transform', description='Parses strings into their types')
 
     def produce(self, *, inputs: Inputs, timeout: float = None, iterations: int = None) -> base.CallResult[Outputs]:
         columns_to_use, output_columns = self._produce_columns(inputs)

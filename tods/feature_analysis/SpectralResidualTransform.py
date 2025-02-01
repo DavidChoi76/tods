@@ -29,7 +29,7 @@ __all__ = ('SpectralResidualTransformPrimitive',)
 
 Inputs = container.DataFrame
 Outputs = container.DataFrame
-
+from tods.utils import construct_primitive_metadata
 class Params(params.Params):
        #to-do : how to make params dynamic
        use_column_names: Optional[Any]
@@ -91,25 +91,33 @@ class Hyperparams(hyperparams.Hyperparams):
 class SpectralResidualTransformPrimitive(TODSTransformerPrimitiveBase[Inputs, Outputs, Hyperparams]):
     """
     Primitive to find Spectral Residual Transform of time series
-    """
-    metadata = metadata_base.PrimitiveMetadata({
-        "__author__": "DATA Lab @ Texas A&M University",
-        'name': 'Time Series Spectral Residual',
-        'python_path': 'd3m.primitives.tods.feature_analysis.spectral_residual_transform',
-        'keywords': ['Time Series','FFT'],
-        'source': {
-            'name': 'DATA Lab @ Texas A&M University',
-            'contact': 'mailto:khlai037@tamu.edu'
+    
+Parameters
+----------
+    avg_filter_dimension : int (default=3)
+        Spectral Residual average filter dimension
+        
+.. dropdown:: Control Parameter
 
-        },
-        "hyperparams_to_tune": ['avg_filter_dimension'],
-        'version': '0.1.0',
-        'algorithm_types': [
-            metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE,
-        ],
-        'primitive_family': metadata_base.PrimitiveFamily.FEATURE_CONSTRUCTION,
-	'id': str(uuid.uuid3(uuid.NAMESPACE_DNS, 'SpectralResidualTransformPrimitive')),
-    })
+    use_columns :Set
+        A set of column indices to force primitive to operate on. If any specified column cannot be parsed, it is skipped.
+    exclude_columns :Set
+        A set of column indices to not operate on. Applicable only if \"use_columns\" is not provided.
+    return_result :Enumeration
+        Should parsed columns be appended, should they replace original columns, or should only parsed columns be returned? This hyperparam is ignored if use_semantic_types is set to false.
+    use_semantic_types :Bool (default=False)
+        Controls whether semantic_types metadata will be used for filtering columns in input dataframe. Setting this to false makes the code ignore return_result and will produce only the output dataframe
+    add_index_columns :Bool (default=False)
+        Also include primary index columns if input data has them. Applicable only if \"return_result\" is set to \"new\".
+    error_on_no_input  :Bool(default=True)
+        Throw an exception if no input column is selected/provided. Defaults to true to behave like sklearn. To prevent pipelines from breaking set this to False.
+    return_semantic_type :str
+        Decides what semantic type to attach to generated attributes
+
+    """
+    metadata = construct_primitive_metadata(module='feature_analysis', name='spectral_residual_transform', id='SpectralResidualTransformPrimitive', primitive_family='feature_construct', hyperparams=['avg_filter_dimension'], description='Time Series Spectral Residual')
+    
+    
 
     def _produce(self, *, inputs: Inputs, timeout: float = None, iterations: int = None) -> base.CallResult[Outputs]:
         """

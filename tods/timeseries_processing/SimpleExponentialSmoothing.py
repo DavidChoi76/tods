@@ -38,7 +38,7 @@ __all__ = ('SimpleExponentialSmoothingPrimitive',)
 Inputs = d3m_dataframe
 # Inputs = container.Dataset
 Outputs = d3m_dataframe
-
+from tods.utils import construct_primitive_metadata
 
 class Params(params.Params):
     input_column_names: Optional[Any]
@@ -113,24 +113,16 @@ class SimpleExponentialSmoothingPrimitive(UnsupervisedLearnerPrimitiveBase[Input
     Primitive wrapping for simple exponential smoothing
     `statsmodels documentation <https://www.statsmodels.org/stable/generated/statsmodels.tsa.holtwinters.SimpleExpSmoothing.html#statsmodels.tsa.holtwinters.SimpleExpSmoothing>`_
     
+Parameters
+----------
+    endog :int (lower = 2, upper = None, default = 3)
+        Array like time series
+    
     """
     
-    metadata = metadata_base.PrimitiveMetadata({ 
-        "__author__": "DATA Lab at Texas A&M University",
-        "name": "statsmodels.preprocessing.data.SimpleExponentialSmoothing",
-        "python_path": "d3m.primitives.tods.timeseries_processing.transformation.simple_exponential_smoothing",
-        "source": {
-            'name': 'DATA Lab at Texas A&M University', 
-            'contact': 'mailto:khlai037@tamu.edu', 
-        },
-	'id': str(uuid.uuid3(uuid.NAMESPACE_DNS, 'SimpleExponentialSmoothingPrimitive')),
-        "hyperparams_to_tune": ['endog','use_columns'],
-        "algorithm_types": [
-            metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE,
-        ],
-        "primitive_family": metadata_base.PrimitiveFamily.DATA_PREPROCESSING,
-        "version": "0.0.1",
-      })
+    metadata = construct_primitive_metadata(module='timeseries_processing', name='simple_exponential_smoothing', id='SimpleExponentialSmoothingPrimitive', primitive_family='data_preprocessing', hyperparams=['endog','use_columns'], description='statsmodels.preprocessing.data.SimpleExponentialSmoothing')
+    
+    
 
     def __init__(self, *,
                  hyperparams: Hyperparams,
@@ -353,4 +345,4 @@ class SimpleExponentialSmoothingPrimitive(UnsupervisedLearnerPrimitiveBase[Input
         return target_columns_metadata
 
 
-SimpleExponentialSmoothingPrimitive.__doc__ = Normalizer.__doc__
+# SimpleExponentialSmoothingPrimitive.__doc__ = Normalizer.__doc__

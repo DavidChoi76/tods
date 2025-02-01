@@ -41,7 +41,7 @@ from pyod.models.sod import SOD
 Inputs = d3m_dataframe
 Outputs = d3m_dataframe
 
-
+from tods.utils import construct_primitive_metadata
 
 class Params(Params_ODBase):
 	######## Add more Attributes #######
@@ -80,8 +80,8 @@ class SODPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params, Hype
 	neighbors in this subspace.
 	See :cite:`kriegel2009outlier` for details.
 
-	Parameters
-	----------
+Parameters
+----------
 	n_neighbors : int, optional (default=20)
 		Number of neighbors to use by default for k neighbors queries.
 	ref_set: int, optional (default=10)
@@ -95,8 +95,8 @@ class SODPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params, Hype
 		the proportion of outliers in the data set. Used when fitting to
 		define the threshold on the decision function.
 
-	Attributes
-	----------
+.. dropdown:: Attributes
+	
 	decision_scores_ : numpy array of shape (n_samples,)
 		The outlier scores of the training data.
 		The higher, the more abnormal. Outliers tend to have higher
@@ -113,22 +113,7 @@ class SODPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params, Hype
 		``threshold_`` on ``decision_scores_``.
 	"""
 
-	metadata = metadata_base.PrimitiveMetadata({
-	    "__author__": "DATA Lab at Texas A&M University",
-	    "name": "Subspace Outlier Detection Primitive",
-	    "python_path": "d3m.primitives.tods.detection_algorithm.pyod_sod",			
-	    "source": {
-                'name': 'DATA Lab at Texas A&M University', 
-                'contact': 'mailto:khlai037@tamu.edu', 
-            },
-	    "hyperparams_to_tune": ['contamination', 'n_neighbors', 'ref_set', 'alpha'],
-	    "version": "0.0.1",
-	    "algorithm_types": [
-                metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE
-            ],
-	    "primitive_family": metadata_base.PrimitiveFamily.ANOMALY_DETECTION,
-	    "id": str(uuid.uuid3(uuid.NAMESPACE_DNS, 'SODPrimitive')),
-	})
+	metadata = construct_primitive_metadata(module='detection_algorithm', name='pyod_sod', id='SODPrimitive', primitive_family='anomaly_detect', hyperparams=['contamination', 'n_neighbors', 'ref_set', 'alpha'], description='Subspace Outlier Detection Primitive')
 
 
 	def __init__(self, *,
@@ -148,7 +133,6 @@ class SODPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params, Hype
 		Set training data for outlier detection.
 		Args:
 			inputs: Container DataFrame
-
 		Returns:
 			None
 		"""
@@ -159,7 +143,6 @@ class SODPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params, Hype
 		Fit model with training data.
 		Args:
 			*: Container DataFrame. Time series data up to fit.
-
 		Returns:
 			None
 		"""
@@ -170,7 +153,6 @@ class SODPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params, Hype
 		Process the testing data.
 		Args:
 			inputs: Container DataFrame. Time series data up to outlier detection.
-
 		Returns:
 			Container DataFrame
 			1 marks Outliers, 0 marks normal.
@@ -182,7 +164,6 @@ class SODPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params, Hype
 		Return parameters.
 		Args:
 			None
-
 		Returns:
 			class Params
 		"""
@@ -193,8 +174,10 @@ class SODPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params, Hype
 		Set parameters for outlier detection.
 		Args:
 			params: class Params
-
 		Returns:
 			None
 		"""
 		super().set_params(params=params)
+
+
+

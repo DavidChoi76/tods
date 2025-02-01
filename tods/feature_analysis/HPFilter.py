@@ -29,7 +29,7 @@ __all__ = ('HPFilterPrimitive',)
 
 Inputs = container.DataFrame
 Outputs = container.DataFrame
-
+from tods.utils import construct_primitive_metadata
 
 class Hyperparams(hyperparams.Hyperparams):
     # Tuning
@@ -106,49 +106,32 @@ class HPFilterPrimitive(TODSTransformerPrimitiveBase[Inputs, Outputs, Hyperparam
     """
     Filter a time series using the Hodrick-Prescott filter.
 
-    Parameters
-    ----------
+Parameters
+----------
     lamb: int
         The Hodrick-Prescott smoothing parameter. A value of 1600 is suggested for quarterly data. Ravn and Uhlig suggest using a value of 6.25 (1600/4**4) for annual data and 129600 (1600*3**4) for monthly data.
+        
+.. dropdown:: Control Parameter
 
     use_columns: Set
-        A set of column indices to force primitive to operate on. If any specified column cannot be parsed, it is skipped.
-    
+        A set of column indices to force primitive to operate on. If any specified column cannot be parsed, it is skipped.    
     exclude_columns: Set
-        A set of column indices to not operate on. Applicable only if \"use_columns\" is not provided.
-    
+        A set of column indices to not operate on. Applicable only if \"use_columns\" is not provided.   
     return_result: Enumeration
-        Should parsed columns be appended, should they replace original columns, or should only parsed columns be returned? This hyperparam is ignored if use_semantic_types is set to false.
-    
+        Should parsed columns be appended, should they replace original columns, or should only parsed columns be returned? This hyperparam is ignored if use_semantic_types is set to false.    
     use_semantic_types: Bool
         Controls whether semantic_types metadata will be used for filtering columns in input dataframe. Setting this to false makes the code ignore return_result and will produce only the output dataframe.
-    
     add_index_columns: Bool
         Also include primary index columns if input data has them. Applicable only if \"return_result\" is set to \"new\".
-    
     error_on_no_input: Bool(
-        Throw an exception if no input column is selected/provided. Defaults to true to behave like sklearn. To prevent pipelines from breaking set this to False.
-    
+        Throw an exception if no input column is selected/provided. Defaults to true to behave like sklearn. To prevent pipelines from breaking set this to False. 
     return_semantic_type: Enumeration[str](
         Decides what semantic type to attach to generated attributes'
     """
 
-    metadata = metadata_base.PrimitiveMetadata({
-         "__author__": "DATA Lab at Texas A&M University",
-         "name": "Hodrick-Prescott filter Primitive",
-         "python_path": "d3m.primitives.tods.feature_analysis.hp_filter",
-         "source": {
-             'name': 'DATA Lab at Texas A&M University', 
-             'contact': 'mailto:khlai037@tamu.edu', 
-         },
-         "hyperparams_to_tune": ['lamb'],
-         "version": "0.0.1",
-         "algorithm_types": [
-             metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE,
-         ],
-         "primitive_family": metadata_base.PrimitiveFamily.FEATURE_CONSTRUCTION,
-	 'id': str(uuid.uuid3(uuid.NAMESPACE_DNS, 'HPFilterPrimitive')),
-    })
+    metadata = construct_primitive_metadata(module='feature_analysis', name='hp_filter', id='HPFilterPrimitive', primitive_family='feature_construct', hyperparams=['lamb'], description='Hodrick-Prescott filter Primitive')
+    
+    
 
 
     def _produce(self, *, inputs: Inputs, timeout: float = None, iterations: int = None) -> CallResult[Outputs]:

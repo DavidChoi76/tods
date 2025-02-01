@@ -23,7 +23,7 @@ __all__ = ('FastFourierTransformPrimitive',)
 
 Inputs = container.DataFrame
 Outputs = container.DataFrame
-
+from tods.utils import construct_primitive_metadata
 
 class Hyperparams(hyperparams.Hyperparams):
 
@@ -165,63 +165,40 @@ class FastFourierTransformPrimitive(TODSTransformerPrimitiveBase[Inputs, Outputs
 
     scipy documentation : https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.fft.html#scipy.fft.fft
 
-    Parameters
-    ----------
-
+Parameters
+----------
     n: int
         Length of the transformed axis of the output. If n is smaller than the length of the input, the input is cropped. If it is larger, the input is padded with zeros.
-
     axis: int
-        Axis over which to compute the FFT. If not given, the last axis is used.
-    
+        Axis over which to compute the FFT. If not given, the last axis is used.    
     norm: str
-        Normalization mode. Default is None, meaning no normalization on the forward transforms and scaling by 1/n on the ifft. For norm=""ortho"", both directions are scaled by 1/sqrt(n).
-    
+        Normalization mode. Default is None, meaning no normalization on the forward transforms and scaling by 1/n on the ifft. For norm=""ortho"", both directions are scaled by 1/sqrt(n).   
     overwrite_x: boolean
         If True, the contents of x can be destroyed; the default is False. See the notes below for more details.
-
     workers: int
         Maximum number of workers to use for parallel computation. If negative, the value wraps around from os.cpu_count(). Defualt is None.
-    
-    
+        
+.. dropdown:: Control Parameter
+
     use_columns: Set
         A set of column indices to force primitive to operate on. If any specified column cannot be parsed, it is skipped.
-
     exclude_columns: Set
         A set of column indices to not operate on. Applicable only if \"use_columns\" is not provided.
-
     return_result: Enumeration
         Should parsed columns be appended, should they replace original columns, or should only parsed columns be returned? This hyperparam is ignored if use_semantic_types is set to false.
-
     use_semantic_types: Bool
         Controls whether semantic_types metadata will be used for filtering columns in input dataframe. Setting this to false makes the code ignore return_result and will produce only the output dataframe.
-
     add_index_columns: Bool
         Also include primary index columns if input data has them. Applicable only if \"return_result\" is set to \"new\".
-
     error_on_no_input: Bool(
         Throw an exception if no input column is selected/provided. Defaults to true to behave like sklearn. To prevent pipelines from breaking set this to False.
-
     return_semantic_type: Enumeration[str](
         Decides what semantic type to attach to generated attributes'
     """
     
-    metadata = metadata_base.PrimitiveMetadata({
-        '__author__' : "DATA Lab @ Texas A&M University",
-        'name': "Fast Fourier Transform",
-        'python_path': 'd3m.primitives.tods.feature_analysis.fast_fourier_transform',
-        'source': {
-            'name': 'DATA Lab @ Texas A&M University',
-            'contact': 'mailto:khlai037@tamu.edu',
-        },
-        'hyperparameters_to_tune':['n','norm','axis'],
-        'version': '0.0.1',
-        'algorithm_types': [
-            metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE,
-        ],
-        'primitive_family': metadata_base.PrimitiveFamily.FEATURE_CONSTRUCTION,
-	 'id': str(uuid.uuid3(uuid.NAMESPACE_DNS, 'FastFourierTransformPrimitive')),
-    })
+    metadata = construct_primitive_metadata(module='feature_analysis', name='fast_fourier_transform', id='FastFourierTransformPrimitive', primitive_family='feature_construct', hyperparams=['n','norm','axis'], description='Fast Fourier Transform')
+    
+    
 
     def __init__(self, *, hyperparams: Hyperparams) -> None:
         super().__init__(hyperparams=hyperparams)
@@ -458,7 +435,7 @@ class FastFourierTransformPrimitive(TODSTransformerPrimitiveBase[Inputs, Outputs
         return target_columns_metadata
 
 
-FastFourierTransformPrimitive.__doc__ = FastFourierTransformPrimitive.__doc__
+# FastFourierTransformPrimitive.__doc__ = FastFourierTransformPrimitive.__doc__
 
 
 

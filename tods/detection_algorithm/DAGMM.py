@@ -20,7 +20,7 @@ __all__ = ('DAGMMPrimitive',)
 Inputs = container.DataFrame
 Outputs = container.DataFrame
 
-
+from tods.utils import construct_primitive_metadata
 class Params(Params_ODBase):
     ######## Add more Attributes #######
 
@@ -99,28 +99,36 @@ class Hyperparams(Hyperparams_ODBase):
 class DAGMMPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params, Hyperparams]):
     """
     Deep Autoencoding Gaussian Mixture Model
-    Parameters
-        ----------
 
+Parameters
+----------
+    comp_hiddens :List(default=[16,8,1])
+        Sizes of hidden layers of compression network.'
+    est_hiddens :List(default=[8,4])
+        Sizes of hidden layers of estimation network.
+    est_dropout_ratio :float(default=0.25)
+        Dropout rate of estimation network
+    minibatch_size :int(default=3)
+        Mini Batch size
+    epoch_size :int(default=100)
+        Epoch
+    rand_seed int(default=0)
+        (optional )random seed used when fit() is called
+    learning_rate :float(default=0.0001)
+        learning rate
+    lambda1 :float(default=0.1)
+        a parameter of loss function (for energy term)
+    lambda2 :float(default=0.1)
+        a parameter of loss function
+    normalize :bool(default=True)
+        Specify whether input data need to be normalized.
+    contamination :float(lower=0.,upper=0.5,default=0.1)
+        the amount of contamination of the data set, i.e.the proportion of outliers in the data set. Used when fitting to define the threshold on the decision function
 
     """
 
     __author__ = "DATA Lab at Texas A&M University",
-    metadata = metadata_base.PrimitiveMetadata(
-        {
-        '__author__': "DATA Lab @Texas A&M University",
-        'name': "DAGMM",
-        'python_path': 'd3m.primitives.tods.detection_algorithm.dagmm',
-        'source': {'name': "DATALAB @Taxes A&M University", 'contact': 'mailto:khlai037@tamu.edu',
-                   'uris': ['https://gitlab.com/lhenry15/tods/-/blob/Yile/anomaly-primitives/anomaly_primitives/DAGMM.py']},
-        'algorithm_types': [metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE],
-        'primitive_family': metadata_base.PrimitiveFamily.ANOMALY_DETECTION,
-        'id': str(uuid.uuid3(uuid.NAMESPACE_DNS, 'DAGMMPrimitive')),
-        'hyperparams_to_tune': ['comp_hiddens','est_hiddens','est_dropout_ratio','minibatch_size','epoch_size','rand_seed',
-                                'learning_rate','lambda1','lambda2','contamination'],
-        'version': '0.0.1',
-        }
-    )
+    metadata = construct_primitive_metadata(module='detection_algorithm', name='dagmm', id='DAGMMPrimitive', primitive_family='anomaly_detect', hyperparams=['comp_hiddens','est_hiddens','est_dropout_ratio','minibatch_size','epoch_size','rand_seed','learning_rate','lambda1','lambda2','contamination'], description='DAGMM')
 
     def __init__(self, *,
                  hyperparams: Hyperparams,  #
@@ -145,7 +153,6 @@ class DAGMMPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params, Hy
         Set training data for outlier detection.
         Args:
             inputs: Container DataFrame
-
         Returns:
             None
         """
@@ -156,7 +163,6 @@ class DAGMMPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params, Hy
         Fit model with training data.
         Args:
             *: Container DataFrame. Time series data up to fit.
-
         Returns:
             None
         """
@@ -168,7 +174,6 @@ class DAGMMPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params, Hy
         Process the testing data.
         Args:
             inputs: Container DataFrame. Time series data up to outlier detection.
-
         Returns:
             Container DataFrame
             1 marks Outliers, 0 marks normal.
@@ -180,7 +185,6 @@ class DAGMMPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params, Hy
         Return parameters.
         Args:
             None
-
         Returns:
             class Params
         """
@@ -191,7 +195,6 @@ class DAGMMPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params, Hy
         Set parameters for outlier detection.
         Args:
             params: class Params
-
         Returns:
             None
         """

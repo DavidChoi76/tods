@@ -1,6 +1,6 @@
 # TODS: Automated Time-series Outlier Detection System
 
-<img width="500" src="./docs/img/tods_logo.png" alt="Logo" />
+<img width="500" src="./docs/source/img/tods_logo.png" alt="Logo" />
 
 [![Actions Status](https://github.com/datamllab/tods/workflows/Build/badge.svg)](https://github.com/datamllab/tods/actions)
 [![codecov](https://codecov.io/gh/datamllab/tods/branch/master/graph/badge.svg?token=M90ZCVTRBF)](https://codecov.io/gh/datamllab/tods)
@@ -27,6 +27,7 @@ TODS is featured for:
 * API Documentations: [http://tods-doc.github.io](http://tods-doc.github.io)
 * Paper: [https://arxiv.org/abs/2009.09822](https://arxiv.org/abs/2009.09822)
 * Related Project: [AutoVideo: An Automated Video Action Recognition System](https://github.com/datamllab/autovideo)
+* :loudspeaker: Do you want to learn more about data pipeline search? Please check out our [data-centric AI survey](https://arxiv.org/abs/2303.10158) and [data-centric AI resources](https://github.com/daochenzha/data-centric-AI)!
 
 ## Cite this Work:
 If you find this  work useful, you may cite this work:

@@ -24,7 +24,7 @@ from ..common.TODSBasePrimitives import TODSTransformerPrimitiveBase
 
 Inputs = d3m_dataframe
 Outputs = d3m_dataframe
-
+from tods.utils import construct_primitive_metadata
 __all__ = ('TRMFPrimitive',)
 
 # class Params(params.Params):
@@ -162,81 +162,52 @@ class Hyperparams(hyperparams.Hyperparams):
 class TRMFPrimitive(TODSTransformerPrimitiveBase[Inputs, Outputs, Hyperparams]):
     """Temporal Regularized Matrix Factorization.
 
-    Parameters
-    ---------- 
-
+Parameters
+----------
     lags : array-like, shape (n_lags,)
         Set of lag indices to use in model.
-    
     K : int
         Length of latent embedding dimension
-    
     lambda_f : float
         Regularization parameter used for matrix F.
-    
     lambda_x : float
         Regularization parameter used for matrix X.
-    
     lambda_w : float
         Regularization parameter used for matrix W.
-
     alpha : float
         Regularization parameter used for make the sum of lag coefficient close to 1.
         That helps to avoid big deviations when forecasting.
-    
     eta : float
         Regularization parameter used for X when undercovering autoregressive dependencies.
-
     max_iter : int
         Number of iterations of updating matrices F, X and W.
-
     F_step : float
         Step of gradient descent when updating matrix F.
-
     X_step : float
         Step of gradient descent when updating matrix X.
-
     W_step : float
         Step of gradient descent when updating matrix W.
 
-
-    Attributes
-    ----------
-
+.. dropdown:: Attributes
+ 
     F : ndarray, shape (n_timeseries, K)
         Latent embedding of timeseries.
-
     X : ndarray, shape (K, n_timepoints)
         Latent embedding of timepoints.
-
     W : ndarray, shape (K, n_lags)
         Matrix of autoregressive coefficients.
 
-    Reference
-    ----------
-    "https://github.com/SemenovAlex/trmf"
+.. dropdown:: Reference
 
+    "https://github.com/SemenovAlex/trmf"s
     Yu, H. F., Rao, N., & Dhillon, I. S. (2016). Temporal regularized matrix factorization for high-dimensional time series prediction.
     In Advances in neural information processing systems (pp. 847-855).
     Which can be found there: http://www.cs.utexas.edu/~rofuyu/papers/tr-mf-nips.pdf
     """
 
-    metadata = metadata_base.PrimitiveMetadata({
-        "__author__": "DATA Lab @ Texas A&M University",
-        "name": "Temporal Regularized Matrix Factorization Primitive",
-        "python_path": "d3m.primitives.tods.feature_analysis.trmf",
-        "source": {
-            'name': 'DATA Lab @ Texas A&M University', 
-            'contact': 'mailto:khlai037@tamu.edu', 
-        },
-        "version": "0.0.1",
-        "hyperparams_to_tune": ['lags', 'K', 'lambda_f', 'lambda_x', 'lambda_w', 'alpha', 'eta', 'max_iter', 'F_step', 'X_step', 'W_step'],
-        "algorithm_types": [
-            metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE, 
-        ],
-        "primitive_family": metadata_base.PrimitiveFamily.FEATURE_CONSTRUCTION,
-	'id': str(uuid.uuid3(uuid.NAMESPACE_DNS, 'TRMFPrimitive')),
-    })
+    metadata = construct_primitive_metadata(module='feature_analysis', name='trmf', id='TRMFPrimitive', primitive_family='feature_construct', hyperparams=['lags', 'K', 'lambda_f', 'lambda_x', 'lambda_w', 'alpha', 'eta', 'max_iter', 'F_step', 'X_step', 'W_step'], description='Temporal Regularized Matrix Factorization Primitive')
+    
+    
 
         
     def _produce(self, *, inputs: Inputs, timeout: float = None, iterations: int = None) -> CallResult[Outputs]:

@@ -38,7 +38,7 @@ __all__ = ('AutoCorrelationPrimitive',)
 
 Inputs = d3m_dataframe
 Outputs = d3m_dataframe
-
+from tods.utils import construct_primitive_metadata
 class PrimitiveCount:
     primitive_no = 0
 
@@ -191,47 +191,27 @@ class AutoCorrelationPrimitive(TODSTransformerPrimitiveBase[Inputs, Outputs, Hyp
 	A primitive that performs autocorrelation on a DataFrame
 	acf() function documentation: https://www.statsmodels.org/dev/generated/statsmodels.tsa.stattools.acf.html
 
-	Parameters:
-		-------
-		x: array_like
-			The time series data.
-		
-		unbiased: bool, default False
-			If True, then denominators for autocovariance are n-k, otherwise n.
-		
-		nlags: int, default 40
-			Number of lags to return autocorrelation for.
-		
-		qstat: bool, default False
-			If True, returns the Ljung-Box q statistic for each autocorrelation coefficient. See q_stat for more information.
-		
-		fft: bool, default None
-			If True, computes the ACF via FFT.
-		
-		alpha: scalar, default None
-			If a number is given, the confidence intervals for the given level are returned. For instance if alpha=.05, 95 % confidence intervals are returned where the standard deviation is computed according to Bartlett”s formula.
-		
-		missing: str, default “none”
-			A string in [“none”, “raise”, “conservative”, “drop”] specifying how the NaNs are to be treated. “none” performs no checks. “raise” raises an exception if NaN values are found. “drop” removes the missing observations and then estimates the autocovariances treating the non-missing as contiguous. “conservative” computes the autocovariance using nan-ops so that nans are removed when computing the mean and cross-products that are used to estimate the autocovariance. When using “conservative”, n is set to the number of non-missing observations.
-		-------
+Parameters
+----------
+	x: array_like
+		The time series data.	
+	unbiased: bool, default False
+		If True, then denominators for autocovariance are n-k, otherwise n.	
+	nlags: int, default 40
+		Number of lags to return autocorrelation for.
+	qstat: bool, default False
+		If True, returns the Ljung-Box q statistic for each autocorrelation coefficient. See q_stat for more information.	
+	fft: bool, default None
+		If True, computes the ACF via FFT.	
+	alpha: scalar, default None
+		If a number is given, the confidence intervals for the given level are returned. For instance if alpha=.05, 95 % confidence intervals are returned where the standard deviation is computed according to Bartlett”s formula.	
+	missing: str, default “none”
+		A string in [“none”, “raise”, “conservative”, “drop”] specifying how the NaNs are to be treated. “none” performs no checks. “raise” raises an exception if NaN values are found. “drop” removes the missing observations and then estimates the autocovariances treating the non-missing as contiguous. “conservative” computes the autocovariance using nan-ops so that nans are removed when computing the mean and cross-products that are used to estimate the autocovariance. When using “conservative”, n is set to the number of non-missing observations.
 	"""
 	
-	metadata = metadata_base.PrimitiveMetadata({
-		'__author__': "DATA Lab @Texas A&M University",
-		'name': "AutoCorrelation of values",
-		'python_path': 'd3m.primitives.tods.feature_analysis.auto_correlation',
-		'source': {
-                    'name': "DATALAB @Taxes A&M University", 
-                    'contact': 'mailto:khlai037@tamu.edu',		   
-                },
-		'version': '0.0.2',		
-		'hyperparams_to_tune': ['unbiased', 'nlags', 'qstat', 'fft', 'alpha', 'missing'],
-		'algorithm_types': [
-                    metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE,
-                ], 
-		'primitive_family': metadata_base.PrimitiveFamily.FEATURE_CONSTRUCTION,
-		'id': str(uuid.uuid3(uuid.NAMESPACE_DNS, 'AutocorrelationPrimitive')),
-		})
+	metadata = construct_primitive_metadata(module='feature_analysis', name='auto_correlation', id='AutocorrelationPrimitive', primitive_family='feature_construct', hyperparams=['unbiased', 'nlags', 'qstat', 'fft', 'alpha', 'missing'], description='AutoCorrelation of values')
+    
+    
 
 
 	def _produce(self, *, inputs: Inputs, timeout: float = None, iterations: int = None) -> base.CallResult[Outputs]:	

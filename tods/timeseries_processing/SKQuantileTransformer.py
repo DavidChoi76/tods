@@ -24,7 +24,7 @@ import uuid
 
 Inputs = d3m_dataframe
 Outputs = d3m_dataframe
-
+from tods.utils import construct_primitive_metadata
 __all__ = ('SKQuantileTransformerPrimitive',)
 
 
@@ -123,51 +123,32 @@ class SKQuantileTransformerPrimitive(UnsupervisedLearnerPrimitiveBase[Inputs, Ou
     Primitive wrapping for sklearn QuantileTransformer
     See `sklearn documentation <https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.QuantileTransformer.html>`_ for more details.
     
-    Parameters
-    ----------
+Parameters
+----------
     n_quantiles: int, optional (default=1000 or n_samples)
         Number of quantiles to be computed. It corresponds to the number of landmarks used to discretize the cumulative distribution function. If n_quantiles is larger than the number of samples, n_quantiles is set to the number of samples as a larger number of quantiles does not give a better approximation of the cumulative distribution function estimator.
-
     output_distribution: str, optional (default=’uniform’)
         Marginal distribution for the transformed data. The choices are ‘uniform’ (default) or ‘normal’.
-
     ignore_implicit_zeros: bool, optional (default=False)
         Only applies to sparse matrices. If True, the sparse entries of the matrix are discarded to compute the quantile statistics. If False, these entries are treated as zeros.
-
     subsample: int, optional (default=1e5)
         Maximum number of samples used to estimate the quantiles for computational efficiency. Note that the subsampling procedure may differ for value-identical sparse and dense matrices.
-
     random_state: int, RandomState instance or None, optional (default=None)
         Determines random number generation for subsampling and smoothing noise. Please see subsample for more details. Pass an int for reproducible results across multiple function calls. See Glossary
 
-    Attributes
-    ----------
+.. dropdown:: Attributes
+
     n_quantiles_: int
         The actual number of quantiles used to discretize the cumulative distribution function.
-
     quantiles_: ndarray, shape (n_quantiles, n_features)
         The values corresponding the quantiles of reference.
-
     references_: ndarray, shape(n_quantiles, )
         Quantiles of references.
     """
     
-    metadata = metadata_base.PrimitiveMetadata({
-        "__author__": "DATA Lab @ Taxes A&M University",
-        "name": "Quantile_transformation",
-        "python_path": "d3m.primitives.tods.timeseries_processing.transformation.quantile_transformer",
-        "source": {
-            'name': "DATALAB @Taxes A&M University", 
-            'contact': 'mailto:khlai037@tamu.edu',
-        },
-        "hyperparams_to_tune": ['n_quantiles', 'output_distribution', 'ignore_implicit_zeros', 'subsample', 'random_state'],
-        "algorithm_types": [
-            metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE, 
-        ],
-        "primitive_family": metadata_base.PrimitiveFamily.DATA_PREPROCESSING,
-        "id": str(uuid.uuid3(uuid.NAMESPACE_DNS, 'SKQuantileTransformer')),
-        "version": "0.0.1",
-    })
+    metadata = construct_primitive_metadata(module='timeseries_processing', name='quantile_transformer', id='SKQuantileTransformer', primitive_family='data_preprocessing', hyperparams=['n_quantiles', 'output_distribution', 'ignore_implicit_zeros', 'subsample', 'random_state'], description='Quantile_transformation')
+    
+    
 
     def __init__(self, *,
                  hyperparams: Hyperparams,
@@ -502,4 +483,4 @@ class SKQuantileTransformerPrimitive(UnsupervisedLearnerPrimitiveBase[Inputs, Ou
         return target_columns_metadata
 
 
-SKQuantileTransformerPrimitive.__doc__ = QuantileTransformer.__doc__
+# SKQuantileTransformerPrimitive.__doc__ = QuantileTransformer.__doc__

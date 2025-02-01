@@ -25,7 +25,7 @@ __all__ = ('WaveletTransformPrimitive',)
 
 Inputs = container.DataFrame
 Outputs = container.DataFrame
-
+from tods.utils import construct_primitive_metadata
 
 class Hyperparams(hyperparams.Hyperparams):
     wavelet = hyperparams.Enumeration(
@@ -153,44 +153,25 @@ class WaveletTransformPrimitive(TODSTransformerPrimitiveBase[Inputs, Outputs, Hy
     """
     A primitive of Multilevel 1D Discrete Wavelet Transform of data.
     See `PyWavelet documentation <https://pywavelets.readthedocs.io/en/latest/ref/>`_ for details.
-    Parameters
-        ----------
-        wavelet: str
-            Wavelet to use
+    
+Parameters
+----------
+    wavelet: str
+        Wavelet to use
+    mode: str
+        Signal extension mode, see https://pywavelets.readthedocs.io/en/latest/ref/signal-extension-modes.html#ref-modes for details.
+    axis: int
+        Axis over which to compute the DWT. If not given, transforming along columns.
+    window_size : int
+        The moving window size.
+    level: int
+        Decomposition level (must be > 0). If level is 0 (default) then it will be calculated using the maximum level.
 
-        mode: str
-            Signal extension mode, see https://pywavelets.readthedocs.io/en/latest/ref/signal-extension-modes.html#ref-modes for details.
-
-        axis: int
-            Axis over which to compute the DWT. If not given, transforming along columns.
-
-        window_size : int
-            The moving window size.
-
-        level: int
-            Decomposition level (must be > 0). If level is 0 (default) then it will be calculated using the maximum level.
-
-        Attributes
-        ----------
-        None
     """
 
-    metadata = metadata_base.PrimitiveMetadata({
-        "__author__": "DATA Lab @ Texas A&M University",
-        "name": "Wavelet_transformation",
-        "python_path": "d3m.primitives.tods.feature_analysis.wavelet_transform",
-        "source": {
-            'name': "DATA Lab @ Taxes A&M University", 
-            'contact': 'mailto:khlai037@tamu.edu',
-        },
-        "version": "0.0.1",
-        "hyperparams_to_tune": ['wavelet', 'mode', 'axis', 'level'],
-        "algorithm_types": [
-            metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE, 
-        ],
-        "primitive_family": metadata_base.PrimitiveFamily.FEATURE_EXTRACTION,
-        "id": str(uuid.uuid3(uuid.NAMESPACE_DNS, 'WaveletTransformer')),
-    })
+    metadata = construct_primitive_metadata(module='feature_analysis', name='wavelet_transform', id='WaveletTransformer', primitive_family='feature_extract', hyperparams=['wavelet', 'mode', 'axis', 'level'], description='Wavelet_transformation')
+    
+    
 
     def __init__(self, *, hyperparams: Hyperparams) -> None:
         super().__init__(hyperparams=hyperparams) # , random_seed=random_seed, docker_containers=docker_containers)
@@ -440,7 +421,7 @@ class WaveletTransformPrimitive(TODSTransformerPrimitiveBase[Inputs, Outputs, Hy
         # print(target_columns_metadata)
         return target_columns_metadata
 
-WaveletTransformPrimitive.__doc__ = WaveletTransformPrimitive.__doc__
+# WaveletTransformPrimitive.__doc__ = WaveletTransformPrimitive.__doc__
 
 class Wavelet:
 

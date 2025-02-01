@@ -34,7 +34,7 @@ from d3m import container, utils as d3m_utils
 Inputs = d3m_dataframe
 # Inputs = container.Dataset
 Outputs = d3m_dataframe
-
+from tods.utils import construct_primitive_metadata
 __all__ = ('SKPowerTransformerPrimitive',)
 
 class Params(params.Params):
@@ -117,36 +117,24 @@ class SKPowerTransformerPrimitive(UnsupervisedLearnerPrimitiveBase[Inputs, Outpu
     """
     PowerTransformer primitive using sklearn to make data more Gaussian-like.
     See `sklearn documentation <https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PowerTransformer.html#>`_ for more details.
-    Parameters
-    ----------
+    
+Parameters
+----------
     method : str ('yeo-johnson' or 'box-cox')
         PowerTransforming algorithm to use.
-
     standardize : bool
         Set to True to apply zero-mean, unit-variance normalization to the transformed output.
 
-    Attributes
-    ----------
+.. dropdown:: Attributes
+
     lambda_: numpy array of float, shape (n_features,)
         The parameters of the power transformation for the selected features.
 
     """
     
-    metadata = metadata_base.PrimitiveMetadata({
-            '__author__': "DATA Lab @Texas A&M University",
-            "name": "Power_transformation",
-            "python_path": "d3m.primitives.tods.timeseries_processing.transformation.power_transformer",
-            'source': {
-                'name': "DATA Lab @ Taxes A&M University", 
-                'contact': 'mailto:khlai037@tamu.edu',
-            },
-            'algorithm_types': [
-                metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE
-            ], 
-            'primitive_family': metadata_base.PrimitiveFamily.DATA_PREPROCESSING,
-            "id": str(uuid.uuid3(uuid.NAMESPACE_DNS, 'SKPowerTransformer')),
-            'version': '0.0.1',		
-            })
+    metadata = construct_primitive_metadata(module='timeseries_processing', name='power_transformer', id='SKPowerTransformer', primitive_family='data_preprocessing', description='Power_transformation')
+    
+    
 
     def __init__(self, *,
                  hyperparams: Hyperparams,
@@ -500,4 +488,4 @@ class SKPowerTransformerPrimitive(UnsupervisedLearnerPrimitiveBase[Inputs, Outpu
         return target_columns_metadata
 
 
-SKPowerTransformerPrimitive.__doc__ = SKPowerTransformerPrimitive.__doc__
+# SKPowerTransformerPrimitive.__doc__ = SKPowerTransformerPrimitive.__doc__

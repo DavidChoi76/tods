@@ -45,7 +45,7 @@ import uuid
 Inputs = d3m_dataframe
 Outputs = d3m_dataframe
 
-
+from tods.utils import construct_primitive_metadata
 class Params(Params_ODBase):
     ######## Add more Attributes #######
 
@@ -193,8 +193,8 @@ class VariationalAutoEncoderPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Ou
     detect outlying objects in the data by calculating the reconstruction
     errors. See :cite:`aggarwal2015outlier` Chapter 3 for details.
 
-    Parameters
-    ----------
+Parameters
+----------
     hidden_neurons : list, optional (default=[4, 2, 4])
         The number of neurons per hidden layers.
 
@@ -254,8 +254,8 @@ class VariationalAutoEncoderPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Ou
         the proportion of outliers in the data set. When fitting this is used
         to define the threshold on the decision function.
 
-    Attributes
-    ----------
+.. dropdown:: Attributes
+    
     encoding_dim_ : int
         The number of neurons in the encoding layer.
 
@@ -287,22 +287,7 @@ class VariationalAutoEncoderPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Ou
         ``threshold_`` on ``decision_scores_``.
     """
 
-    metadata = metadata_base.PrimitiveMetadata({
-        "__author__": "DATA Lab at Texas A&M University",
-        "name": "TODS.anomaly_detection_primitives.VariationalAutoEncoder",
-        "python_path": "d3m.primitives.tods.detection_algorithm.pyod_vae",
-        "source": {
-            'name': "DATA Lab at Texas A&M University", 
-            'contact': 'mailto:khlai037@tamu.edu',
-        },
-        "version": "0.0.1",
-        "hyperparameters_to_tune": ['contamination'],
-        "algorithm_types": [
-            metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE,
-        ],
-        "primitive_family": metadata_base.PrimitiveFamily.ANOMALY_DETECTION,
-        "id": str(uuid.uuid3(uuid.NAMESPACE_DNS, 'AutoEncoderPrimitive')),
-    })
+    metadata = construct_primitive_metadata(module='detection_algorithm', name='pyod_vae', id='AutoEncoderPrimitive', primitive_family='anomaly_detect', flag_hyper= True, hyperparams=['contamination'],description='TODS.anomaly_detection_primitives.VariationalAutoEncoder')
 
     def __init__(self, *,
                  hyperparams: Hyperparams, #
@@ -341,7 +326,6 @@ class VariationalAutoEncoderPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Ou
         Set training data for outlier detection.
         Args:
             inputs: Container DataFrame
-
         Returns:
             None
         """
@@ -352,7 +336,6 @@ class VariationalAutoEncoderPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Ou
         Fit model with training data.
         Args:
             *: Container DataFrame. Time series data up to fit.
-
         Returns:
             None
         """
@@ -363,7 +346,6 @@ class VariationalAutoEncoderPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Ou
         Process the testing data.
         Args:
             inputs: Container DataFrame. Time series data up to outlier detection.
-
         Returns:
             Container DataFrame
             1 marks Outliers, 0 marks normal.
@@ -375,7 +357,6 @@ class VariationalAutoEncoderPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Ou
         Return parameters.
         Args:
             None
-
         Returns:
             class Params
         """
@@ -386,10 +367,10 @@ class VariationalAutoEncoderPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Ou
         Set parameters for outlier detection.
         Args:
             params: class Params
-
         Returns:
             None
         """
         super().set_params(params=params)
+
 
 

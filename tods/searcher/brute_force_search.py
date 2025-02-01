@@ -16,6 +16,7 @@ class BruteForceSearch(PipelineSearchBase): # pragma: no cover
 
         # Find the candidates
         self.task_description = schemas_utils.get_task_description(self.problem_description['problem']['task_keywords'])
+        # FIXME stagnate
         self.available_pipelines = self._return_pipelines(
                             self.task_description['task_type'], self.task_description['task_subtype'], self.task_description['data_types'])
         
@@ -26,6 +27,7 @@ class BruteForceSearch(PipelineSearchBase): # pragma: no cover
 
         self.current_pipeline_index = 0
         self.offset = 1
+        print("---")
 
     def evaluate(self, pipeline_to_eval, input_data=None):
         if input_data is None:
@@ -58,13 +60,14 @@ class BruteForceSearch(PipelineSearchBase): # pragma: no cover
         # DEBUG
         ####################
         for pipeline_result in pipeline_results:
-            try:
-                for error in pipeline_result.error:
-                    if error is not None:
-                        raise error
-            except:
-                import traceback
-                traceback.print_exc()
+            if pipeline_result.error:
+                try:
+                    for error in pipeline_result.error:
+                        if error is not None:
+                            raise error
+                except:
+                    import traceback
+                    traceback.print_exc()
         ####################
 
         return [self.ranking_function(pipeline_result) for pipeline_result in pipeline_results]
@@ -83,15 +86,15 @@ primitive_python_paths = { # pragma: no cover
         #'d3m.primitives.tods.data_processing.continuity_validation',
     ],
     'timeseries_processing': [
-        'd3m.primitives.tods.timeseries_processing.transformation.axiswise_scaler',
-        'd3m.primitives.tods.timeseries_processing.transformation.standard_scaler',
-        'd3m.primitives.tods.timeseries_processing.transformation.power_transformer',
-        'd3m.primitives.tods.timeseries_processing.transformation.quantile_transformer',
-        'd3m.primitives.tods.timeseries_processing.transformation.moving_average_transform',
-        'd3m.primitives.tods.timeseries_processing.transformation.simple_exponential_smoothing',
-        #'d3m.primitives.tods.timeseries_processing.transformation.holt_smoothing',
-        #'d3m.primitives.tods.timeseries_processing.transformation.holt_winters_exponential_smoothing',
-        #'d3m.primitives.tods.timeseries_processing.decomposition.time_series_seasonality_trend_decomposition',
+        'd3m.primitives.tods.timeseries_processing.axiswise_scaler',
+        'd3m.primitives.tods.timeseries_processing.standard_scaler',
+        'd3m.primitives.tods.timeseries_processing.power_transformer',
+        'd3m.primitives.tods.timeseries_processing.quantile_transformer',
+        'd3m.primitives.tods.timeseries_processing.moving_average_transform',
+        'd3m.primitives.tods.timeseries_processing.simple_exponential_smoothing',
+        'd3m.primitives.tods.timeseries_processing.holt_smoothing',
+        'd3m.primitives.tods.timeseries_processing.holt_winters_exponential_smoothing',
+        'd3m.primitives.tods.timeseries_processing.time_series_seasonality_trend_decomposition',
     ],
     'feature_analysis': [
         #'d3m.primitives.tods.feature_analysis.auto_correlation',
@@ -102,28 +105,28 @@ primitive_python_paths = { # pragma: no cover
         'd3m.primitives.tods.feature_analysis.statistical_abs_sum',
         'd3m.primitives.tods.feature_analysis.statistical_h_mean',
         'd3m.primitives.tods.feature_analysis.statistical_maximum',
-        #'d3m.primitives.tods.feature_analysis.statistical_minimum',
-        #'d3m.primitives.tods.feature_analysis.statistical_mean_abs',
-        #'d3m.primitives.tods.feature_analysis.statistical_mean_abs_temporal_derivative',
-        #'d3m.primitives.tods.feature_analysis.statistical_mean_temporal_derivative',
-        #'d3m.primitives.tods.feature_analysis.statistical_median_abs_deviation',
-        #'d3m.primitives.tods.feature_analysis.statistical_kurtosis',
-        #'d3m.primitives.tods.feature_analysis.statistical_skew',
-        #'d3m.primitives.tods.feature_analysis.statistical_std',
-        #'d3m.primitives.tods.feature_analysis.statistical_var',
-        #'d3m.primitives.tods.feature_analysis.statistical_variation',
-        #'d3m.primitives.tods.feature_analysis.statistical_vec_sum',
-        #'d3m.primitives.tods.feature_analysis.statistical_willison_amplitude',
-        #'d3m.primitives.tods.feature_analysis.statistical_zero_crossing',
-        #'d3m.primitives.tods.feature_analysis.spectral_residual_transform',
-        #'d3m.primitives.tods.feature_analysis.fast_fourier_transform',
-        #'d3m.primitives.tods.feature_analysis.discrete_cosine_transform',
-        #'d3m.primitives.tods.feature_analysis.non_negative_matrix_factorization',
-        #'d3m.primitives.tods.feature_analysis.bk_filter',
-        #'d3m.primitives.tods.feature_analysis.hp_filter',
-        #'d3m.primitives.tods.feature_analysis.truncated_svd',
-        #'d3m.primitives.tods.feature_analysis.wavelet_transform',
-        #'d3m.primitives.tods.feature_analysis.trmf',
+        'd3m.primitives.tods.feature_analysis.statistical_minimum',
+        'd3m.primitives.tods.feature_analysis.statistical_mean_abs',
+        'd3m.primitives.tods.feature_analysis.statistical_mean_abs_temporal_derivative',
+        'd3m.primitives.tods.feature_analysis.statistical_mean_temporal_derivative',
+        'd3m.primitives.tods.feature_analysis.statistical_median_abs_deviation',
+        'd3m.primitives.tods.feature_analysis.statistical_kurtosis',
+        'd3m.primitives.tods.feature_analysis.statistical_skew',
+        'd3m.primitives.tods.feature_analysis.statistical_std',
+        'd3m.primitives.tods.feature_analysis.statistical_var',
+        'd3m.primitives.tods.feature_analysis.statistical_variation',
+        'd3m.primitives.tods.feature_analysis.statistical_vec_sum',
+        'd3m.primitives.tods.feature_analysis.statistical_willison_amplitude',
+        'd3m.primitives.tods.feature_analysis.statistical_zero_crossing',
+        'd3m.primitives.tods.feature_analysis.spectral_residual_transform',
+        'd3m.primitives.tods.feature_analysis.fast_fourier_transform',
+        'd3m.primitives.tods.feature_analysis.discrete_cosine_transform',
+        'd3m.primitives.tods.feature_analysis.non_negative_matrix_factorization',
+        'd3m.primitives.tods.feature_analysis.bk_filter',
+        'd3m.primitives.tods.feature_analysis.hp_filter',
+        'd3m.primitives.tods.feature_analysis.truncated_svd',
+        'd3m.primitives.tods.feature_analysis.wavelet_transform',
+        'd3m.primitives.tods.feature_analysis.trmf',
     ],
     'detection_algorithm': [
         'd3m.primitives.tods.detection_algorithm.pyod_ae',
@@ -133,21 +136,21 @@ primitive_python_paths = { # pragma: no cover
         'd3m.primitives.tods.detection_algorithm.pyod_abod',
         'd3m.primitives.tods.detection_algorithm.pyod_hbos',
         'd3m.primitives.tods.detection_algorithm.pyod_iforest',
-        #'d3m.primitives.tods.detection_algorithm.pyod_lof',
-        #'d3m.primitives.tods.detection_algorithm.pyod_knn',
-        #'d3m.primitives.tods.detection_algorithm.pyod_ocsvm',
+        'd3m.primitives.tods.detection_algorithm.pyod_lof',
+        'd3m.primitives.tods.detection_algorithm.pyod_knn',
+        'd3m.primitives.tods.detection_algorithm.pyod_ocsvm',
         #'d3m.primitives.tods.detection_algorithm.pyod_loda',
         #'d3m.primitives.tods.detection_algorithm.pyod_cblof',
         #'d3m.primitives.tods.detection_algorithm.pyod_sogaal',
         #'d3m.primitives.tods.detection_algorithm.pyod_mogaal',
         #'d3m.primitives.tods.detection_algorithm.matrix_profile',
-        #'d3m.primitives.tods.detection_algorithm.AutoRegODetector',
+        'd3m.primitives.tods.detection_algorithm.AutoRegODetector',
         #'d3m.primitives.tods.detection_algorithm.LSTMODetector',
         #'d3m.primitives.tods.detection_algorithm.AutoRegODetector',
-        #'d3m.primitives.tods.detection_algorithm.PCAODetector',
-        #'d3m.primitives.tods.detection_algorithm.KDiscordODetector',
-        #'d3m.primitives.tods.detection_algorithm.deeplog',
-        #'d3m.primitives.tods.detection_algorithm.telemanom',
+        'd3m.primitives.tods.detection_algorithm.PCAODetector',
+        'd3m.primitives.tods.detection_algorithm.KDiscordODetector',
+        'd3m.primitives.tods.detection_algorithm.deeplog',
+        'd3m.primitives.tods.detection_algorithm.telemanom',
     ],
     'contamination': [0.01, 0.02, 0.05, 0.07, 0.1, 0.15, 0.2],
 }

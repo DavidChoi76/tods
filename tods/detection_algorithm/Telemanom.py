@@ -52,7 +52,7 @@ __all__ = ('Telemanom',)
 
 Inputs = container.DataFrame
 Outputs = container.DataFrame
-
+from tods.utils import construct_primitive_metadata
 class Params(Params_ODBase):
 	######## Add more Attributes #######
 
@@ -190,28 +190,69 @@ class TelemanomPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params
 	"""
 	A primitive that uses telmanom for outlier detection
 
-	Parameters
-		----------
+    Parameters
+    ----------
+        smoothing_perc :float (default=0.05)
+            determines window size used in EWMA smoothing (percentage of total values for channel)
+            
+        window_size_ :int(default=100)
+            number of trailing batches to use in error calculation
 
+        error_buffer :int(default=50)
+            number of values surrounding an error that are brought into the sequence (promotes grouping on nearby sequences
 
+        batch_size :int(default=70)
+            Batch size while predicting
+
+    .. dropdown:: LSTM Model Parameters
+
+        dropout :float(default=0.3)
+            Dropout rate
+
+        validation_split :float(default=0.2)
+            Validation split
+
+        optimizer :(default='Adam')
+            Optimizer
+
+        lstm_batch_size :int (default=64)
+            lstm model training batch size
+
+        loss_metric :(default='mean_squared_error')
+            loss function
+      
+        layers = List(default=[10,10])
+            No of units for the 2 lstm layers
+
+    .. dropdown:: Training Parameters
+
+        epochs :int(default=1)
+            Epoch
+
+        patience  :int(default=10)
+            Number of consequetive training iterations to allow without decreasing the val_loss by at least min_delta
+
+        min_delta :float(default=0.0003)
+            Number of consequetive training iterations to allow without decreasing the val_loss by at least min_delta
+
+        l_s :int(default=100)
+            num previous timesteps provided to model to predict future values
+
+        n_predictions :int(default=10)
+            number of steps ahead to predict
+
+    .. dropdown:: Error thresholding parameters
+
+        p :float(default=0.05)
+            minimum percent decrease between max errors in anomalous sequences (used for pruning)
+
+    .. dropdown:: Contamination
+
+        contamination : float in (0., 0.5), optional (default=0.1)
+            the amount of contamination of the data set, i.e.the proportion of outliers in the data set. Used when fitting to define the threshold on the decision function
 	"""
 
-	metadata = metadata_base.PrimitiveMetadata({
-	    '__author__' : "DATA Lab at Texas A&M University",
-	    'name': "Telemanom",
-	    'python_path': 'd3m.primitives.tods.detection_algorithm.telemanom',
-	    'source': {
-	        'name': 'DATA Lab at Texas A&M University',
-	        'contact': 'mailto:khlai037@tamu.edu',
-	    },
-	    'hyperparameters_to_tune':['layers','loss_metric','optimizer','epochs','p','l_s','patience','min_delta','dropout','smoothing_perc'],
-	    'version': '0.0.1',
-	    'algorithm_types': [
-	    	metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE,
-	    ],
-	    'primitive_family': metadata_base.PrimitiveFamily.ANOMALY_DETECTION,
-	    'id': str(uuid.uuid3(uuid.NAMESPACE_DNS, 'TelemanomPrimitive')),
-	})
+	metadata = construct_primitive_metadata(module='detection_algorithm', name='telemanom', id='TelemanomPrimitive', primitive_family='anomaly_detect', hyperparams=['layers','loss_metric','optimizer','epochs','p','l_s','patience','min_delta','dropout','smoothing_perc'], description='Telemanom')
 
 	def __init__(self, *,
 				 hyperparams: Hyperparams,  #
@@ -243,7 +284,6 @@ class TelemanomPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params
 		Set training data for outlier detection.
 		Args:
 			inputs: Container DataFrame
-
 		Returns:
 			None
 		"""
@@ -254,7 +294,6 @@ class TelemanomPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params
 		Fit model with training data.
 		Args:
 			*: Container DataFrame. Time series data up to fit.
-
 		Returns:
 			None
 		"""
@@ -265,7 +304,6 @@ class TelemanomPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params
 		Process the testing data.
 		Args:
 			inputs: Container DataFrame. Time series data up to outlier detection.
-
 		Returns:
 			Container DataFrame
 			1 marks Outliers, 0 marks normal.
@@ -290,7 +328,6 @@ class TelemanomPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params
 		Return parameters.
 		Args:
 			None
-
 		Returns:
 			class Params
 		"""
@@ -301,7 +338,6 @@ class TelemanomPrimitive(UnsupervisedOutlierDetectorBase[Inputs, Outputs, Params
 		Set parameters for outlier detection.
 		Args:
 			params: class Params
-
 		Returns:
 			None
 		"""
@@ -354,7 +390,6 @@ class Detector(CollectiveBaseDetector):
 		Fit data to  LSTM model.
 		Args:
 			inputs : X , ndarray of size (number of sample,features)
-
 		Returns:
 			return : self object with trained model
 		"""
@@ -388,17 +423,14 @@ class Detector(CollectiveBaseDetector):
 
 	def decision_function(self, X: np.array):
 		"""Predict raw anomaly scores of X using the fitted detector.
-
 		The anomaly score of an input sample is computed based on the fitted
 		detector. For consistency, outliers are assigned with
 		higher anomaly scores.
-
 		Parameters
 		----------
 		X : numpy array of shape (n_samples, n_features)
 			The input samples. Sparse matrices are accepted only
 			if they are supported by the base estimator.
-
 		Returns
 		-------
 		anomaly_scores : numpy array of shape (n_samples,)
@@ -465,3 +497,6 @@ class Detector(CollectiveBaseDetector):
 # 	print('scores: ',pred_labels[0].shape)
 # 	print('left_indices: ',pred_labels[1].shape)
 # 	print('right_indices: ',pred_labels[2].shape)
+
+
+

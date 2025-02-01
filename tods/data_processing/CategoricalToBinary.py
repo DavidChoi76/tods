@@ -25,6 +25,7 @@ __all__ = ('CategoricalToBinaryPrimitive',)
 Inputs = container.DataFrame
 Outputs = container.DataFrame
 
+from tods.utils import construct_primitive_metadata
 
 class Hyperparams(hyperparams.Hyperparams):
 
@@ -118,52 +119,29 @@ class Cat2B:
 
 class CategoricalToBinaryPrimitive(transformer.TransformerPrimitiveBase[Inputs, Outputs, Hyperparams]):
     """
-        A primitive which will convert all the distinct values present in a column to a binary represntation with each distinct value having a different column.
-
-    
+    A primitive which will convert all the distinct values present in a column to a binary represntation with each distinct value having a different column.
+  
     Parameters
-    ----------  
+    ----------
     use_columns: Set
         A set of column indices to force primitive to operate on. If any specified column cannot be parsed, it is skipped.
-
     exclude_columns: Set
         A set of column indices to not operate on. Applicable only if \"use_columns\" is not provided.
-
     return_result: Enumeration
         Should parsed columns be appended, should they replace original columns, or should only parsed columns be returned? This hyperparam is ignored if use_semantic_types is set to false.
-
     use_semantic_types: Bool
         Controls whether semantic_types metadata will be used for filtering columns in input dataframe. Setting this to false makes the code ignore return_result and will produce only the output dataframe.
-
     add_index_columns: Bool
         Also include primary index columns if input data has them. Applicable only if \"return_result\" is set to \"new\".
-
     error_on_no_input: Bool(
         Throw an exception if no input column is selected/provided. Defaults to true to behave like sklearn. To prevent pipelines from breaking set this to False.
-
     return_semantic_type: Enumeration[str](
         Decides what semantic type to attach to generated attributes'
     """
 
     __author__ = "DATA LAB"
-    metadata = metadata_base.PrimitiveMetadata(
-        {
-            "__author__ " : "DATALAB @ Texas A&M University",
-            'name': "Converting Categorical to Binary",
-            'python_path': 'd3m.primitives.tods.data_processing.categorical_to_binary',
-            'source': {
-                'name': 'DATA Lab at Texas A&M University',
-                'contact': 'mailto:khlai037@tamu.edu',
-            },
-            'algorithm_types': [
-                metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE,
-            ],
-            'primitive_family': metadata_base.PrimitiveFamily.DATA_PREPROCESSING,
-            'id': str(uuid.uuid3(uuid.NAMESPACE_DNS, 'CategoricalToBinaryPrimitive')),
-            'hyperparameters_to_tune':"None",
-            'version': '0.0.1',
-        },
-    )
+    
+    metadata = construct_primitive_metadata(module='data_processing', name='categorical_to_binary', id='CategoricalToBinaryPrimitive', primitive_family='data_preprocessing', description='Converting Categorical to Binary')
 
     def __init__(self, *, hyperparams: Hyperparams) -> None:
         super().__init__(hyperparams=hyperparams)
@@ -391,5 +369,5 @@ class CategoricalToBinaryPrimitive(transformer.TransformerPrimitiveBase[Inputs, 
         return target_columns_metadata
 
 
-CategoricalToBinaryPrimitive.__doc__ = CategoricalToBinaryPrimitive.__doc__
+# CategoricalToBinaryPrimitive.__doc__ = CategoricalToBinaryPrimitive.__doc__
 

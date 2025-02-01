@@ -28,7 +28,7 @@ __all__ = ('SystemWiseDetectionPrimitive',)
 
 Inputs = container.DataFrame
 Outputs = container.DataFrame
-
+from tods.utils import construct_primitive_metadata
 class Params(params.Params): # pragma: no cover
        #to-do : how to make params dynamic
        use_column_names: Optional[Any]
@@ -104,25 +104,21 @@ class Hyperparams(hyperparams.Hyperparams): # pragma: no cover
 
 class SystemWiseDetectionPrimitive(transformer.TransformerPrimitiveBase[Inputs, Outputs, Hyperparams]): # pragma: no cover
     """
-    Primitive to find abs_energy of time series
+    Primitive to find abs_energy of time series.
+
+    Parameters
+    ----------
+    window_size :int(default=10)
+        Window Size for decomposition
+
+    method_type :str ('max', 'avg', 'sliding_window_sum','majority_voting_sliding_window_sum','majority_voting_sliding_window_max')
+        The type of method used to find anomalous system
+
+    contamination : float in (0., 0.5), optional (default=0.1)
+           The amount of contamination of the data set, i.e. the proportion of outliers in the data set. 
     """
 
-    metadata = metadata_base.PrimitiveMetadata({
-        "__author__": "DATA Lab at Texas A&M University",
-        'name': 'Sytem_Wise_Anomaly_Detection_Primitive',
-        'python_path': 'd3m.primitives.tods.detection_algorithm.system_wise_detection',
-        'source': {
-            'name': 'DATA Lab at Texas A&M University',
-            'contact': 'mailto:khlai037@tamu.edu'
-        },
-        "hyperparams_to_tune": ['window_size','method_type','contamination'],
-        'version': '0.1.0',
-        'algorithm_types': [
-            metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE,
-        ],
-        'primitive_family': metadata_base.PrimitiveFamily.ANOMALY_DETECTION,
-        'id': str(uuid.uuid3(uuid.NAMESPACE_DNS, 'Sytem_Wise_Anomaly_Detection_Primitive')),
-     })
+    metadata = construct_primitive_metadata(module='detection_algorithm', name='system_wise_detection', id='Sytem_Wise_Anomaly_Detection_Primitive', primitive_family='anomaly_detect', hyperparams=['window_size','method_type','contamination'], description='Sytem_Wise_Anomaly_Detection_Primitive')
 
     def __init__(self, *, hyperparams: Hyperparams) -> None:
         super().__init__(hyperparams=hyperparams)
@@ -130,12 +126,10 @@ class SystemWiseDetectionPrimitive(transformer.TransformerPrimitiveBase[Inputs, 
 
     def produce(self, *, inputs: Inputs, timeout: float = None, iterations: int = None) -> base.CallResult[Outputs]:
         """
-
         Args:
             inputs: Container DataFrame
             timeout: Default
             iterations: Default
-
         Returns:
             Container DataFrame containing abs_energy of  time series
         """
@@ -196,7 +190,6 @@ class SystemWiseDetectionPrimitive(transformer.TransformerPrimitiveBase[Inputs, 
         Args:
             inputs: Container DataFrame
             hyperparams: d3m.metadata.hyperparams.Hyperparams
-
         Returns:
             list
         """
@@ -226,7 +219,6 @@ class SystemWiseDetectionPrimitive(transformer.TransformerPrimitiveBase[Inputs, 
         Args:
             inputs_metadata: d3m.metadata.base.DataMetadata
             column_index: int
-
         Returns:
             bool
         """
@@ -259,7 +251,6 @@ class SystemWiseDetectionPrimitive(transformer.TransformerPrimitiveBase[Inputs, 
             inputs_metadata: metadata_base.DataMetadata
             outputs: Container Dataframe
             target_columns_metadata: list
-
         Returns:
             d3m.metadata.base.DataMetadata
         """
@@ -277,7 +268,6 @@ class SystemWiseDetectionPrimitive(transformer.TransformerPrimitiveBase[Inputs, 
         Args:
             inputs: Container Dataframe
             predictions: array-like data (n_samples, n_features)
-
         Returns:
             Dataframe
         """
@@ -294,7 +284,6 @@ class SystemWiseDetectionPrimitive(transformer.TransformerPrimitiveBase[Inputs, 
         Args:
             outputs_metadata: metadata.base.DataMetadata
             hyperparams: d3m.metadata.hyperparams.Hyperparams
-
         Returns:
             List[OrderedDict]
         """
@@ -464,7 +453,6 @@ class SystemWiseDetectionPrimitive(transformer.TransformerPrimitiveBase[Inputs, 
                 transformed_X.append(ranking[iter])
 
         return transformed_X
-
 
 
 

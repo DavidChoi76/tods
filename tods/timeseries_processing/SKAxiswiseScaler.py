@@ -20,7 +20,7 @@ __all__ = ('SKAxiswiseScalerPrimitive',)
 
 Inputs = container.DataFrame
 Outputs = container.DataFrame
-
+from tods.utils import construct_primitive_metadata
 class Hyperparams(hyperparams.Hyperparams):
     # Added by Guanchu
     axis = hyperparams.UniformInt(
@@ -126,34 +126,19 @@ class SKAxiswiseScalerPrimitive(transformer.TransformerPrimitiveBase[Inputs, Out
     Standardize a dataset along any axis, and center to the mean and component wise scale to unit variance.
     See `sklearn documentation <https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.scale.html?highlight=scale#sklearn.preprocessing.scale>`_ for more details.
 
-    Parameters
-    ----------
+Parameters
+----------
     axis: int (0 by default).
         axis used to compute the means and standard deviations along. If 0, independently standardize each feature, otherwise (if 1) standardize each sample.
-
     with_mean: boolean, True by default.
         If True, center the data before scaling.
-
     with_std: boolean, True by default.
         If True, scale the data to unit variance (or equivalently, unit standard deviation).
     """
 
-    metadata = metadata_base.PrimitiveMetadata({
-        "__author__": "DATA Lab @ Taxes A&M University",
-        "name": "Axis_wise_scale",
-        "python_path": "d3m.primitives.tods.timeseries_processing.transformation.axiswise_scaler",
-        "hyperparams_to_tune": ['with_mean', 'with_std', 'axis'],
-        "source": {
-            'name': "DATA Lab @Taxes A&M University", 
-            'contact': 'mailto:khlai037@tamu.edu',
-        },
-        "algorithm_types": [
-            metadata_base.PrimitiveAlgorithmType.TODS_PRIMITIVE, 
-        ],
-        "primitive_family": metadata_base.PrimitiveFamily.DATA_TRANSFORMATION,
-        "id": str(uuid.uuid3(uuid.NAMESPACE_DNS, 'SKAxiswiseScaler')),
-        "version": "0.0.1",
-    })
+    metadata = construct_primitive_metadata(module='timeseries_processing', name='axiswise_scaler', id='SKAxiswiseScaler', primitive_family='data_transform', hyperparams=['with_mean', 'with_std', 'axis'], description='Axis_wise_scale')
+    
+    
 
     def __init__(self, *, hyperparams: Hyperparams) -> None:
         super().__init__(hyperparams=hyperparams) # , random_seed=random_seed, docker_containers=docker_containers)
@@ -398,4 +383,4 @@ class SKAxiswiseScalerPrimitive(transformer.TransformerPrimitiveBase[Inputs, Out
 
         return target_columns_metadata
 
-SKAxiswiseScalerPrimitive.__doc__ = SKAxiswiseScalerPrimitive.__doc__
+# SKAxiswiseScalerPrimitive.__doc__ = SKAxiswiseScalerPrimitive.__doc__
